@@ -9,7 +9,7 @@ tasks:
     run: 
         desc: Run the app
         cmds:
-        - GOFLAGS=-mod=mod go run run.go
+        - GOFLAGS=-mod=mod go run .
 
     bot:
         desc: Execute the bot
