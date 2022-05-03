@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/bwmarrin/discordgo"
+	"go.mongodb.org/mongo-driver/bson"
 )
 
 var componentReply = map[string]func(s *discordgo.Session, i *discordgo.InteractionCreate){
@@ -18,6 +19,14 @@ var componentReply = map[string]func(s *discordgo.Session, i *discordgo.Interact
 		}
 
 		_, err = s.ChannelDelete(i.ChannelID)
+		if err != nil {
+			fmt.Println(err.Error())
+			return
+		}
+
+		_, err = collection.DeleteOne(ctx, bson.M{
+			"authorID": TicketChannelMapping[i.ChannelID],
+		})
 		if err != nil {
 			fmt.Println(err.Error())
 			return

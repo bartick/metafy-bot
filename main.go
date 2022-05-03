@@ -15,6 +15,8 @@ func init() {
 
 func main() {
 
+	client := connectDb()
+
 	dg := runServer(os.Getenv("TOKEN"))
 
 	if dg == nil {
@@ -26,5 +28,6 @@ func main() {
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, os.Kill)
 	<-sc
 
+	client.Disconnect(ctx)
 	dg.Close()
 }

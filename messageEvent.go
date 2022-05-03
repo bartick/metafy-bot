@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/bwmarrin/discordgo"
+	"go.mongodb.org/mongo-driver/bson"
 )
 
 var (
@@ -50,12 +51,23 @@ func MessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 				return
 			}
 
+			_, err = collection.InsertOne(ctx, bson.M{
+				"authorID":  m.Author.ID,
+				"channelID": channel.ID,
+			})
+
+			if err != nil {
+				fmt.Println(err.Error())
+				return
+			}
+
 			TicketChannelMapping[m.Author.ID] = channel.ID
 			TicketChannelMapping[channel.ID] = m.Author.ID
 
 			_, err = s.ChannelMessageSend(m.ChannelID, "Hello, **"+m.Author.Username+"!**\nThank you for reaching to us. Please wait and a staff member will be with you shortly.\nIf you have any questions, please feel free to ask them to me.")
 			if err != nil {
-				fmt.Println("Error sending message")
+				fmt.Print("Error Sending Message")
+				fmt.Println(err.Error())
 				return
 			}
 
@@ -99,7 +111,7 @@ func MessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		}
 		_, err := s.ChannelMessageSend(TicketChannelMapping[m.Author.ID], "**"+m.Author.Username+"#"+m.Author.Discriminator+"**: "+m.Content)
 		if err != nil {
-			fmt.Println("Error sending message")
+			fmt.Println(err.Error())
 			return
 		}
 
