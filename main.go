@@ -15,15 +15,13 @@ func init() {
 
 func main() {
 
-	Token := os.Getenv("TOKEN")
-
-	dg := runServer(Token)
+	dg := runServer(os.Getenv("TOKEN"))
 
 	if dg == nil {
 		return
 	}
 
-	fmt.Println("Bot is now running. Press CTRL-C to exit.")
+	fmt.Println("Bot is now running. Press CTRL-C (^C) to exit.")
 	sc := make(chan os.Signal, 1)
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, os.Kill)
 	<-sc

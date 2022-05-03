@@ -14,6 +14,11 @@ func runServer(Token string) *discordgo.Session {
 		return nil
 	}
 
+	dg.AddHandler(MessageCreate)
+	dg.AddHandler(interactionReply)
+
+	dg.Identify.Intents = discordgo.IntentsGuildMessages | discordgo.IntentDirectMessages
+
 	err = dg.Open()
 	if err != nil {
 		fmt.Println("error opening connection,", err)
